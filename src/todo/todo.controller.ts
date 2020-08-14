@@ -1,12 +1,26 @@
-import { Controller, Delete, Get, Post, Put } from '@nestjs/common';
+import { Controller, Delete, Get, Post, Put, Req, Res } from '@nestjs/common';
+import { Request, Response } from 'express';
 
 @Controller('todo')
 export class TodoController {
 
-  @Get()
-  getTodos() {
+  @Get('v2')
+  getTodosV2(
+    @Req() request: Request,
+    @Res() response: Response
+  ) {
     console.log('Récupérer la liste des todos');
-    return 'Liste des TODOS';
+    response.status(205);
+    response.json({
+      contenu :  `Je suis une réponse générée à partir de l'objet Response de express`
+    })
+  }
+
+  @Get()
+  getTodos(
+  ) {
+    console.log('Récupérer la liste des todos');
+    return 'La liste des Todos';
   }
 
   @Post()
