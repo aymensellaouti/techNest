@@ -1,13 +1,33 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Query, Req, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get, HttpStatus,
+  NotFoundException,
+  Param,
+  ParseIntPipe,
+  Post,
+  Put,
+  Query,
+  Req,
+  Res, ValidationPipe,
+} from '@nestjs/common';
 import { Request, Response } from 'express';
 import { Todo } from './entities/todo.entity';
+import { findIndex } from 'rxjs/operators';
+import { GetPaginatedTodoDto } from './dto/get-paginated-todo.dto';
+import { AddTodoDto } from './dto/add-todo.dto';
+import { TodoService } from './todo.service';
+import { isNumeric } from 'rxjs/internal-compatibility';
+import { type } from 'os';
+import { UpperAndFusionPipe } from '../pipes/upper-and-fusion.pipe';
 
 @Controller('todo')
 export class TodoController {
-  constructor() {
-    this.todos = []
-  }
-  todos: Todo[];
+  constructor(
+     private todoService: TodoService
+  ) {}
+
   @Get('v2')
   getTodosV2(
     @Req() request: Request,
@@ -20,46 +40,57 @@ export class TodoController {
     })
   }
 
+  // Récupérer la liste des Todos
   @Get()
   getTodos(
-    @Query() mesQueryParams
-  ) {
-    console.log(mesQueryParams);
-    return this.todos;
+    @Query() mesQueryParams: GetPaginatedTodoDto
+  ): Todo[] {
+    console.log(mesQueryParams instanceof GetPaginatedTodoDto);
+    return this.todoService.getTodos();
   }
 
+  // Récupérer le Todo via son Id
   @Get('/:id')
   getTodoById(
-    @Param('id') id
+    @Param('id', new ParseIntPipe(
+      {
+        errorHttpStatusCode: HttpStatus.NOT_FOUND
+      }
+    )) id
   ) {
-    const todo = this.todos.find((actualTodo) => actualTodo.id === +id);
-    if (todo)
-      return todo;
-    throw new NotFoundException(`Le todo d'id ${id} n'existe pas`);
+    return this.todoService.getTodoById(id);
   }
 
+  // Ajouter un Todo
   @Post()
   addTodo(
-    @Body() newTodo: Todo
+    @Body() newTodo: AddTodoDto
+  ): Todo {
+      console.log(newTodo);
+      return this.todoService.addTodo(newTodo);
+  }
+
+  // Supprimer un Todo via son id
+  @Delete(':id')
+  deleteTodo(
+    @Param('id', ParseIntPipe) id
   ) {
-    if (this.todos.length) {
-      newTodo.id = this.todos[this.todos.length - 1].id + 1;
-    } else {
-      newTodo.id = 1;
-    }
-    this.todos.push(newTodo);
-    return newTodo;
+    return this.todoService.deleteTodo(id);
   }
 
-  @Delete()
-  deleteTodo() {
-    console.log('Supprimer un todo de la liste des todos');
-    return 'Delete TODO';
+  @Put(':id')
+  modifierTodo(
+    @Param('id', ParseIntPipe) id,
+    @Body() newTodo: Partial<AddTodoDto>
+  ) {
+      return this.todoService.updateTodo(id, newTodo);
   }
 
-  @Put()
-  modifierTodo() {
-    console.log('Modifier l un des todos de la liste des todos');
-    return 'Update TODO';
+  @Post('pipe')
+  testPipe(
+    @Param('data', UpperAndFusionPipe) paramData,
+    @Body() data
+  ) {
+    return data;
   }
 }
