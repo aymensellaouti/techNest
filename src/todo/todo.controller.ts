@@ -1,9 +1,13 @@
-import { Controller, Delete, Get, Post, Put, Req, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Query, Req, Res } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { Todo } from './entities/todo.entity';
 
 @Controller('todo')
 export class TodoController {
-
+  constructor() {
+    this.todos = []
+  }
+  todos: Todo[];
   @Get('v2')
   getTodosV2(
     @Req() request: Request,
@@ -18,15 +22,33 @@ export class TodoController {
 
   @Get()
   getTodos(
+    @Query() mesQueryParams
   ) {
-    console.log('Récupérer la liste des todos');
-    return 'La liste des Todos';
+    console.log(mesQueryParams);
+    return this.todos;
+  }
+
+  @Get('/:id')
+  getTodoById(
+    @Param('id') id
+  ) {
+    const todo = this.todos.find((actualTodo) => actualTodo.id === +id);
+    if (todo)
+      return todo;
+    throw new NotFoundException(`Le todo d'id ${id} n'existe pas`);
   }
 
   @Post()
-  addTodo() {
-    console.log('Ajouter un Todo à la liste des todos');
-    return 'Add TODO';
+  addTodo(
+    @Body() newTodo: Todo
+  ) {
+    if (this.todos.length) {
+      newTodo.id = this.todos[this.todos.length - 1].id + 1;
+    } else {
+      newTodo.id = 1;
+    }
+    this.todos.push(newTodo);
+    return newTodo;
   }
 
   @Delete()
