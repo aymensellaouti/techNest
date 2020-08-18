@@ -2,7 +2,7 @@ import {
   Body,
   Controller,
   Delete,
-  Get, HttpStatus,
+  Get, Head, Headers, HttpStatus,
   NotFoundException,
   Param,
   ParseIntPipe,
@@ -10,7 +10,7 @@ import {
   Put,
   Query,
   Req,
-  Res, ValidationPipe,
+  Res, UseInterceptors, ValidationPipe,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { Todo } from './entities/todo.entity';
@@ -21,6 +21,8 @@ import { TodoService } from './todo.service';
 import { isNumeric } from 'rxjs/internal-compatibility';
 import { type } from 'os';
 import { UpperAndFusionPipe } from '../pipes/upper-and-fusion.pipe';
+import { DurationInterceptor } from '../interceptors/duration.interceptor';
+
 
 @Controller('todo')
 export class TodoController {
@@ -43,9 +45,8 @@ export class TodoController {
   // Récupérer la liste des Todos
   @Get()
   getTodos(
-    @Query() mesQueryParams: GetPaginatedTodoDto
+    @Query() mesQueryParams: GetPaginatedTodoDto,
   ): Todo[] {
-    console.log(mesQueryParams instanceof GetPaginatedTodoDto);
     return this.todoService.getTodos();
   }
 
@@ -66,7 +67,6 @@ export class TodoController {
   addTodo(
     @Body() newTodo: AddTodoDto
   ): Todo {
-      console.log(newTodo);
       return this.todoService.addTodo(newTodo);
   }
 
