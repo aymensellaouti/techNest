@@ -1,14 +1,29 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpStatus,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { CvService } from './cv.service';
 import { CvEntity } from './entities/cv.entity';
 import { AddCvDto } from './dto/Add-cv.dto';
 import { UpdateCvDto } from './dto/update-cv.dto';
+import { JwtAuthGuard } from '../user/Guards/jwt-auth.guard';
+import { Request } from 'express';
 
 @Controller('cv')
 export class CvController {
   constructor(
     private cvService: CvService
   ) {
+
   }
 
   @Get()
@@ -17,14 +32,18 @@ export class CvController {
   }
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   async addCv(
-    @Body() addCvDto: AddCvDto
+    @Body() addCvDto: AddCvDto,
+    @Req() req: Request
   ): Promise<CvEntity> {
+    console.log('user from request', req.user);
     return await this.cvService.addCv(addCvDto);
   }
 
 
   @Patch()
+  @UseGuards(JwtAuthGuard)
   async updateCv2(
     @Body() updateObject
   ) {
@@ -34,13 +53,16 @@ export class CvController {
 
   // Chercher le nombre de cv par age
   @Get('stats')
+  @UseGuards(JwtAuthGuard)
   async statsCvNumberByAge() {
     return await this.cvService.statCvNumberByAge(50,18);
   }
 
   @Get('recover/:id')
+  @UseGuards(JwtAuthGuard)
   async restoreCv(
     @Param('id', ParseIntPipe) id: number) {
+    HttpStatus
     return await this.cvService.restoreCv(id);
   }
 
@@ -52,6 +74,7 @@ export class CvController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   async deleteCv(
     @Param('id', ParseIntPipe) id: number
   ) {
@@ -59,6 +82,7 @@ export class CvController {
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard)
   async updateCv(
     @Body() updateCvDto: UpdateCvDto,
     @Param('id', ParseIntPipe) id: number
