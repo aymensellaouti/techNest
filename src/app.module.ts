@@ -10,15 +10,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CvModule } from './cv/cv.module';
 import { UserModule } from './user/user.module';
 
-import * as dotenv from 'dotenv';
-
-dotenv.config();
+import appConfig from './config/app.config';
 
 @Module({
   imports: [
     TodoModule,
     ConfigModule.forRoot({
-      isGlobal: true
+      isGlobal: true,
+      load: [appConfig]
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',

@@ -8,6 +8,7 @@ import { JwtModule } from '@nestjs/jwt';
 import * as dotenv from 'dotenv';
 import { JwtStrategy } from './strategy/passport-jwt.strategy';
 
+
 dotenv.config();
 @Module({
   imports: [
@@ -25,6 +26,7 @@ dotenv.config();
   controllers: [
     UserController
   ],
-  providers: [UserService, JwtStrategy]
+  providers: [UserService, JwtStrategy],
+  exports: [UserService]
 })
 export class UserModule {}

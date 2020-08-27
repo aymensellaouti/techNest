@@ -27,9 +27,13 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({
     transform: true,
     whitelist: true,
-    forbidNonWhitelisted: true
+    forbidNonWhitelisted: true,
+    transformOptions: {
+      enableImplicitConversion: true
+    }
   }));
   app.useGlobalInterceptors(new DurationInterceptor());
-  await app.listen(configService.get('APP_PORT'));
+  console.log('port : ', configService.get('port'));
+  await app.listen(configService.get('port'));
 }
 bootstrap();

@@ -17,35 +17,37 @@ import { AddCvDto } from './dto/Add-cv.dto';
 import { UpdateCvDto } from './dto/update-cv.dto';
 import { JwtAuthGuard } from '../user/Guards/jwt-auth.guard';
 import { Request } from 'express';
+import { User } from '../decorators/user.decorator';
 
 @Controller('cv')
 export class CvController {
   constructor(
     private cvService: CvService
-  ) {
-
-  }
+  ) {}
 
   @Get()
-  async getAllCvs(): Promise<CvEntity[]> {
-    return await this.cvService.getCvs();
+  @UseGuards(JwtAuthGuard)
+  async getAllCvs(
+    @User() user
+  ): Promise<CvEntity[]> {
+    return await this.cvService.getCvs(user);
   }
 
   @Post()
   @UseGuards(JwtAuthGuard)
   async addCv(
     @Body() addCvDto: AddCvDto,
-    @Req() req: Request
+    @User() user
   ): Promise<CvEntity> {
-    console.log('user from request', req.user);
-    return await this.cvService.addCv(addCvDto);
+    return await this.cvService.addCv(addCvDto, user);
   }
 
 
   @Patch()
   @UseGuards(JwtAuthGuard)
   async updateCv2(
-    @Body() updateObject
+    @Body() updateObject,
+    @User() user
   ) {
     const {updateCriteria, updateCvDto} = updateObject
     return await this.cvService.updateCv2(updateCriteria, updateCvDto);
@@ -61,33 +63,37 @@ export class CvController {
   @Get('recover/:id')
   @UseGuards(JwtAuthGuard)
   async restoreCv(
-    @Param('id', ParseIntPipe) id: number) {
-    HttpStatus
-    return await this.cvService.restoreCv(id);
+    @Param('id', ParseIntPipe) id: number,
+    @User() user
+  ) {
+    return await this.cvService.restoreCv(id, user);
   }
 
   @Get(":id")
+  @UseGuards(JwtAuthGuard)
   async getCv(
-    @Param('id', ParseIntPipe) id
+    @Param('id', ParseIntPipe) id,
+    @User() user
   ): Promise<CvEntity> {
-    return await this.cvService.findCvById(id);
+    return await this.cvService.findCvById(id, user);
   }
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   async deleteCv(
-    @Param('id', ParseIntPipe) id: number
+    @Param('id', ParseIntPipe) id: number,
+    @User() user
   ) {
-    return this.cvService.softDeleteCv(id);
+    return this.cvService.softDeleteCv(id, user);
   }
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
   async updateCv(
     @Body() updateCvDto: UpdateCvDto,
-    @Param('id', ParseIntPipe) id: number
+    @Param('id', ParseIntPipe) id: number,
+    @User() user
   ): Promise<CvEntity> {
-    return await this.cvService.updateCv(id, updateCvDto);
+    return await this.cvService.updateCv(id, updateCvDto, user);
   }
-
 }

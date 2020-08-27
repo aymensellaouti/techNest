@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { LoginCredentialsDto } from './dto/login-credentials.dto';
 import { JwtService } from '@nestjs/jwt';
+import { UserRoleEnum } from '../enums/user-role.enum';
 @Injectable()
 export class UserService {
   constructor(
@@ -67,6 +68,11 @@ export class UserService {
       throw new NotFoundException('username ou password erronée');
     }
   }
+
+  isOwnerOrAdmin(objet, user) {
+    return user.role === UserRoleEnum.ADMIN || (objet.user && objet.user.id === user.id);
+  }
+
 }
 
 
