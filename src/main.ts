@@ -14,7 +14,10 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
   const corsOptions = {
-    origin: ['http://localhost:4200']
+    origin: [
+      'http://localhost:4200',
+      'https://aymensellaouti.github.io'
+    ]
   }
   app.enableCors(corsOptions);
   app.use(morgan('dev'));
@@ -34,6 +37,6 @@ async function bootstrap() {
   }));
   app.useGlobalInterceptors(new DurationInterceptor());
   console.log('port : ', configService.get('port'));
-  await app.listen(configService.get('port'));
+  await app.listen(configService.get('port') || 8080);
 }
 bootstrap();

@@ -1,6 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { UserSubscribeDto } from './dto/user-subscribe.dto';
-import { UserEntity } from './entites/user.entity';
 import { UserService } from './user.service';
 import { LoginCredentialsDto } from './dto/login-credentials.dto';
 

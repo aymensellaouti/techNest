@@ -46,7 +46,7 @@ export class UserService {
         {username}
         )
       .getOne();
-    console.log(user);
+    // console.log(user);
     // Si not user je déclenche une erreur
 
     if (!user)
