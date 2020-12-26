@@ -37,7 +37,7 @@ async function bootstrap() {
     }
   }));
   app.useGlobalInterceptors(new DurationInterceptor());
-  console.log('port : ', configService.get('port'));
+  // console.log('port : ', configService.get('port'));
   const options = new DocumentBuilder()
     .setTitle('CvTech')
     .setDescription('CvTech application wuth Techwall')
@@ -46,6 +46,7 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);
-  await app.listen(configService.get('port') || 3000);
+  //configService.get('port') ||
+  await app.listen( 3000);
 }
 bootstrap();
