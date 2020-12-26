@@ -7,6 +7,7 @@ import * as dotenv from 'dotenv';
 
 import { DurationInterceptor } from './interceptors/duration.interceptor';
 import { ConfigService } from '@nestjs/config';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 
 dotenv.config();
@@ -37,6 +38,14 @@ async function bootstrap() {
   }));
   app.useGlobalInterceptors(new DurationInterceptor());
   console.log('port : ', configService.get('port'));
+  const options = new DocumentBuilder()
+    .setTitle('CvTech')
+    .setDescription('CvTech application wuth Techwall')
+    .setVersion('1.0')
+    .addTag('cv')
+    .build();
+  const document = SwaggerModule.createDocument(app, options);
+  SwaggerModule.setup('api', app, document);
   await app.listen(configService.get('port') || 8080);
 }
 bootstrap();
