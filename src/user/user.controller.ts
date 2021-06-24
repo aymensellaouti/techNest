@@ -1,7 +1,8 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Get, Post, UseInterceptors } from '@nestjs/common';
 import { UserSubscribeDto } from './dto/user-subscribe.dto';
 import { UserService } from './user.service';
 import { LoginCredentialsDto } from './dto/login-credentials.dto';
+import { UserEntity } from './entites/user.entity';
 
 @Controller('user')
 export class UserController {
@@ -21,5 +22,10 @@ export class UserController {
     @Body() credentials: LoginCredentialsDto
   ) {
     return this.userService.login(credentials);
+  }
+
+  @Get('all')
+  findAll(): Promise<UserEntity[]> {
+    return this.userService.findAll();
   }
 }

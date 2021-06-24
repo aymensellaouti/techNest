@@ -73,6 +73,9 @@ export class UserService {
     return user.role === UserRoleEnum.ADMIN || (objet.user && objet.user.id === user.id);
   }
 
+  async findAll(): Promise<UserEntity[]> {
+    return await this.userRepository.find();
+  }
 }
 
 

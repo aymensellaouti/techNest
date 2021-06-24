@@ -2,6 +2,7 @@ import { OneToMany, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { TimestampEntites } from '../../Generics/timestamp.entites.';
 import { CvEntity } from '../../cv/entities/cv.entity';
 import { UserRoleEnum } from '../../enums/user-role.enum';
+import { Exclude } from 'class-transformer';
 
 @Entity('user')
 export class UserEntity extends TimestampEntites{
@@ -21,9 +22,11 @@ export class UserEntity extends TimestampEntites{
   email: string;
 
   @Column()
+  @Exclude()
   password: string;
 
   @Column()
+  @Exclude()
   salt: string;
 
   @Column({

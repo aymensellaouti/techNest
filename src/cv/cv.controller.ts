@@ -3,12 +3,10 @@ import {
   Controller,
   Delete,
   Get,
-  HttpStatus,
   Param,
   ParseIntPipe,
   Patch,
   Post,
-  Req,
   UseGuards,
 } from '@nestjs/common';
 import { CvService } from './cv.service';
@@ -16,7 +14,6 @@ import { CvEntity } from './entities/cv.entity';
 import { AddCvDto } from './dto/Add-cv.dto';
 import { UpdateCvDto } from './dto/update-cv.dto';
 import { JwtAuthGuard } from '../user/Guards/jwt-auth.guard';
-import { Request } from 'express';
 import { User } from '../decorators/user.decorator';
 
 @Controller('cv')

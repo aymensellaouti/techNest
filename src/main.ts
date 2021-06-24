@@ -1,6 +1,6 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { Request, Response } from 'express';
 import * as morgan from 'morgan';
 import * as dotenv from 'dotenv';
@@ -37,6 +37,7 @@ async function bootstrap() {
     }
   }));
   app.useGlobalInterceptors(new DurationInterceptor());
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(new Reflector()));
   // console.log('port : ', configService.get('port'));
   const options = new DocumentBuilder()
     .setTitle('CvTech')
