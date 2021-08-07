@@ -8,6 +8,7 @@ import { UserRoleEnum } from '../enums/user-role.enum';
 import { UserService } from '../user/user.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { MailService } from '../mail/mail.service';
+import { EVENTS } from '../config/events';
 
 @Injectable()
 export class CvService {
@@ -41,9 +42,12 @@ export class CvService {
   async addCv(cv: AddCvDto, user): Promise<CvEntity> {
     const newCv = this.cvRepository.create(cv);
     newCv.user = user;
-    const newAddedCv = await this.cvRepository.save(newCv);
-    await this.mailService.addedCvMail();
-    return newAddedCv;
+    await this.cvRepository.save(newCv);
+    // await this.mailService.addedCvMail();
+    this.eventEmitter.emit(EVENTS.CV_ADD, {
+      name: newCv.name
+    });
+    return newCv;
   }
 
   async updateCv(id: number, cv: UpdateCvDto, user): Promise<CvEntity> {

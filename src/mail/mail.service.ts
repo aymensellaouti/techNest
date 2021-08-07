@@ -7,14 +7,12 @@ export class MailService {
     private mailerService: MailerService
   ) {
   }
-  async addedCvMail() {
+  async addedCvMail(payload) {
     await this.mailerService.sendMail({
       to: 'aymen.sellaouti@gmail.com',
       subject: 'A new Cv is added',
       template: './cv-sent',
-      context: {
-        name: 'aymen'
-      }
+      context: payload
     });
   }
 }
