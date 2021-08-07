@@ -4,11 +4,13 @@ import { CvService } from './cv.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CvEntity } from './entities/cv.entity';
 import { UserModule } from '../user/user.module';
+import { MailModule } from '../mail/mail.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([CvEntity]),
-    UserModule
+    UserModule,
+    MailModule
   ],
   controllers: [CvController],
   providers: [CvService]

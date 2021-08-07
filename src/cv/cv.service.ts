@@ -4,16 +4,19 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AddCvDto } from './dto/Add-cv.dto';
 import { UpdateCvDto } from './dto/update-cv.dto';
-import { UserEntity } from '../user/entites/user.entity';
 import { UserRoleEnum } from '../enums/user-role.enum';
 import { UserService } from '../user/user.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class CvService {
   constructor(
     @InjectRepository(CvEntity)
     private cvRepository: Repository<CvEntity>,
-    private userService: UserService
+    private userService: UserService,
+    private eventEmitter: EventEmitter2,
+    private mailService: MailService
   ) {
   }
 
@@ -38,7 +41,9 @@ export class CvService {
   async addCv(cv: AddCvDto, user): Promise<CvEntity> {
     const newCv = this.cvRepository.create(cv);
     newCv.user = user;
-    return await this.cvRepository.save(newCv);
+    const newAddedCv = await this.cvRepository.save(newCv);
+    await this.mailService.addedCvMail();
+    return newAddedCv;
   }
 
   async updateCv(id: number, cv: UpdateCvDto, user): Promise<CvEntity> {

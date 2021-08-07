@@ -11,6 +11,8 @@ import { CvModule } from './cv/cv.module';
 import { UserModule } from './user/user.module';
 
 import appConfig from './config/app.config';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -26,11 +28,15 @@ import appConfig from './config/app.config';
       username: 'root', //process.env.DB_USERNAME,
       password: '',// process.env.DB_PASSWORD,
       database: 'nest-cvtech',//process.env.DB_NAME,
+      autoLoadEntities: true,
       entities: ["dist/**/*.entity{.ts,.js}"],
       synchronize: true,
+      debug: true
     }),
     CvModule,
-    UserModule
+    UserModule,
+    EventEmitterModule.forRoot(),
+    MailModule
   ],
   controllers: [AppController],
   providers: [AppService],

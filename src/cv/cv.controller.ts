@@ -15,13 +15,18 @@ import { AddCvDto } from './dto/Add-cv.dto';
 import { UpdateCvDto } from './dto/update-cv.dto';
 import { JwtAuthGuard } from '../user/Guards/jwt-auth.guard';
 import { User } from '../decorators/user.decorator';
-
+import * as faker from 'faker';
 @Controller('cv')
 export class CvController {
   constructor(
     private cvService: CvService
   ) {}
 
+  @Get('faker')
+  testFaker() {
+    console.log('name example :' );
+    return faker.name.name;
+  }
   @Get()
   @UseGuards(JwtAuthGuard)
   async getAllCvs(
