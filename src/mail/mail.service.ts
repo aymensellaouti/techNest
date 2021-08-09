@@ -12,7 +12,14 @@ export class MailService {
       to: 'aymen.sellaouti@gmail.com',
       subject: 'A new Cv is added',
       template: './cv-sent',
-      context: payload
+      context: payload,
+      attachments: [
+        {
+         filename: 'test1.txt',
+         content: 'Bonjour j envoi un fichier en pièce jointe',
+         contentType: 'text/plain'
+        }
+      ]
     });
   }
 }

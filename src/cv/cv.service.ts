@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CvEntity } from './entities/cv.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -7,8 +7,8 @@ import { UpdateCvDto } from './dto/update-cv.dto';
 import { UserRoleEnum } from '../enums/user-role.enum';
 import { UserService } from '../user/user.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { MailService } from '../mail/mail.service';
 import { EVENTS } from '../config/events';
+import {Cache} from 'cache-manager';
 
 @Injectable()
 export class CvService {
@@ -17,19 +17,30 @@ export class CvService {
     private cvRepository: Repository<CvEntity>,
     private userService: UserService,
     private eventEmitter: EventEmitter2,
-    private mailService: MailService
+    @Inject(CACHE_MANAGER) private cacheManager: Cache
   ) {
   }
 
   async findCvById(id: number, user) {
 
+    // const cacheId = `get.cv.${id}`;
+    // console.log('in get cv by id wuth cache id', cacheId);
+    // const cachedCv = await this.cacheManager.get(cacheId);
+    // // if (cachedCv) {
+    //   console.log('i get the cached cv',cachedCv);
+    // // }
     const cv = await this.cvRepository.findOne(id);
     if(! cv) {
       throw new NotFoundException(`Le cv d'id ${id} n'existe pas`);
     }
     // Si on est admin ou si on est admin et on a pas de user
-    if (this.userService.isOwnerOrAdmin(cv, user))
+    if (this.userService.isOwnerOrAdmin(cv, user)) {
+      // console.log('i am caching');
+      // await this.cacheManager.set(`get.cv.${id}`, cv, {
+      //   ttl: 10000000
+      // });
       return cv;
+    }
     else
       throw new UnauthorizedException();
   }

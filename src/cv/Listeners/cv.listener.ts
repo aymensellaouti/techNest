@@ -12,7 +12,12 @@ export class CvListener {
   @OnEvent(EVENTS.CV_ADD)
   async handleCvAdded(payload: any) {
     console.log("j ecoute sur l'ajout d un cv et j'envoi un email");
-    await this.mailService.addedCvMail(payload);
+    console.log('payloa');
+    try {
+      await this.mailService.addedCvMail(payload);
+    } catch (e) {
+      console.log(e);
+    }
   }
 }
 

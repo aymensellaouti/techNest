@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import { CacheInterceptor, CacheModule, MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TodoModule } from './todo/todo.module';
@@ -13,6 +13,8 @@ import { UserModule } from './user/user.module';
 import appConfig from './config/app.config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { MailModule } from './mail/mail.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+
 
 @Module({
   imports: [
@@ -31,15 +33,24 @@ import { MailModule } from './mail/mail.module';
       autoLoadEntities: true,
       entities: ["dist/**/*.entity{.ts,.js}"],
       synchronize: true,
-      debug: true
+      debug: false
     }),
     CvModule,
     UserModule,
     EventEmitterModule.forRoot(),
-    MailModule
+    MailModule,
+    CacheModule.register({
+
+    })
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: CacheInterceptor
+    }
+  ],
   exports: [AppService]
 })
 export class AppModule implements NestModule{

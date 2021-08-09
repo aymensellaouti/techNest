@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { CvController } from './cv.controller';
 import { CvService } from './cv.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -11,7 +11,10 @@ import { CvListener } from './Listeners/cv.listener';
   imports: [
     TypeOrmModule.forFeature([CvEntity]),
     UserModule,
-    MailModule
+    MailModule,
+    CacheModule.register({
+
+    })
   ],
   controllers: [CvController],
   providers: [CvService, CvListener]

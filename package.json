@@ -35,8 +35,10 @@
     "@nestjs/platform-express": "^7.0.0",
     "@nestjs/swagger": "^4.7.8",
     "@nestjs/typeorm": "^7.1.0",
+    "@t00nday/nestjs-pdf": "^2.0.6",
     "@types/passport-jwt": "^3.0.3",
     "bcrypt": "^5.0.1",
+    "cache-manager": "^3.4.4",
     "class-transformer": "^0.3.1",
     "class-validator": "^0.12.2",
     "dotenv": "^8.2.0",
@@ -53,9 +55,11 @@
     "typeorm": "^0.2.25"
   },
   "devDependencies": {
+    "@compodoc/compodoc": "^1.1.14",
     "@nestjs/cli": "^7.0.0",
     "@nestjs/schematics": "^7.0.0",
     "@nestjs/testing": "^7.0.0",
+    "@types/cache-manager": "^3.4.2",
     "@types/express": "^4.17.3",
     "@types/jest": "25.1.4",
     "@types/node": "^13.9.1",

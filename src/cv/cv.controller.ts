@@ -1,5 +1,5 @@
 import {
-  Body,
+  Body, CacheInterceptor, CacheKey, CacheTTL,
   Controller,
   Delete,
   Get,
@@ -7,7 +7,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
-  UseGuards,
+  UseGuards, UseInterceptors,
 } from '@nestjs/common';
 import { CvService } from './cv.service';
 import { CvEntity } from './entities/cv.entity';
@@ -16,19 +16,25 @@ import { UpdateCvDto } from './dto/update-cv.dto';
 import { JwtAuthGuard } from '../user/Guards/jwt-auth.guard';
 import { User } from '../decorators/user.decorator';
 import * as faker from 'faker';
+import { Reflector } from '@nestjs/core';
 @Controller('cv')
+// @UseInterceptors(CacheInterceptor)
 export class CvController {
   constructor(
-    private cvService: CvService
+    private cvService: CvService,
+    private reflector: Reflector
   ) {}
 
   @Get('faker')
   testFaker() {
-    console.log('name example :' );
+    console.log('name example 👽' );
     return faker.name.name;
   }
   @Get()
   @UseGuards(JwtAuthGuard)
+  @UseInterceptors(CacheInterceptor)
+  @CacheKey('cv.get.all')
+  @CacheTTL(60 * 60 * 24)
   async getAllCvs(
     @User() user
   ): Promise<CvEntity[]> {
